@@ -104,11 +104,22 @@ class LedgerMemVectorStore(BasePydanticVectorStore):
             nodes.append(TextNode(text=content, id_=memory_id, metadata=metadata))
             ids.append(memory_id)
             score = getattr(hit, "score", None)
-            if score is not None:
-                scores.append(float(score))
+            # similarities and nodes must stay parallel — appending to
+            # ``scores`` only when the hit has a score produced misaligned
+            # arrays whenever the backend returned mixed (None, float)
+            # results, so LlamaIndex would attribute the wrong score to
+            # the wrong node downstream.
+            scores.append(float(score) if score is not None else 0.0)
             if len(nodes) >= limit:
                 break
-        return VectorStoreQueryResult(nodes=nodes, similarities=scores or None, ids=ids)
+        # Drop similarities entirely when not a single hit had a score,
+        # otherwise keep them aligned 1:1 with ``nodes``.
+        any_score = any(getattr(h, "score", None) is not None for h in hits[: len(nodes)])
+        return VectorStoreQueryResult(
+            nodes=nodes,
+            similarities=scores if any_score else None,
+            ids=ids,
+        )
 
 
 def _matches_filters(metadata: dict[str, Any], filters: Any) -> bool:
