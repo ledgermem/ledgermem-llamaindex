@@ -1,4 +1,4 @@
-"""LlamaIndex ``BasePydanticVectorStore`` backed by LedgerMem."""
+"""LlamaIndex ``BasePydanticVectorStore`` backed by Mnemo."""
 
 from __future__ import annotations
 
@@ -10,34 +10,34 @@ from llama_index.core.vector_stores.types import (
     VectorStoreQuery,
     VectorStoreQueryResult,
 )
-from ledgermem import LedgerMem
+from getmnemo import Mnemo
 from pydantic import PrivateAttr
 
 
-class LedgerMemVectorStore(BasePydanticVectorStore):
-    """Persist LlamaIndex nodes in LedgerMem.
+class MnemoVectorStore(BasePydanticVectorStore):
+    """Persist LlamaIndex nodes in Mnemo.
 
-    LedgerMem manages embeddings server-side, so this store does not require a
+    Mnemo manages embeddings server-side, so this store does not require a
     local embedding model and ignores ``query_embedding`` — it sends the raw
-    ``query_str`` to LedgerMem's hybrid retriever instead.
+    ``query_str`` to Mnemo's hybrid retriever instead.
     """
 
     stores_text: bool = True
     is_embedding_query: bool = False
     flat_metadata: bool = True
 
-    _client: LedgerMem = PrivateAttr()
+    _client: Mnemo = PrivateAttr()
 
-    def __init__(self, client: LedgerMem, **kwargs: Any) -> None:
+    def __init__(self, client: Mnemo, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._client = client
 
     @classmethod
     def class_name(cls) -> str:
-        return "LedgerMemVectorStore"
+        return "MnemoVectorStore"
 
     @property
-    def client(self) -> LedgerMem:
+    def client(self) -> Mnemo:
         return self._client
 
     def add(self, nodes: list[BaseNode], **add_kwargs: Any) -> list[str]:
@@ -57,9 +57,9 @@ class LedgerMemVectorStore(BasePydanticVectorStore):
         return ids
 
     def delete(self, ref_doc_id: str, **delete_kwargs: Any) -> None:
-        # The argument is a LlamaIndex *ref doc id*, not a LedgerMem memory
+        # The argument is a LlamaIndex *ref doc id*, not a Mnemo memory
         # id. Calling client.delete(ref_doc_id) directly was a no-op (or a
-        # 404) because LedgerMem keys by its own server-issued id. Walk the
+        # 404) because Mnemo keys by its own server-issued id. Walk the
         # workspace and delete every chunk whose stored metadata matches.
         cursor: str | None = None
         ids_to_delete: list[str] = []

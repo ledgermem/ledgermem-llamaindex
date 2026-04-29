@@ -7,12 +7,12 @@ import types
 from unittest.mock import MagicMock
 
 
-def _install_fake_ledgermem() -> None:
-    if "ledgermem" in sys.modules:
+def _install_fake_getmnemo() -> None:
+    if "getmnemo" in sys.modules:
         return
-    fake = types.ModuleType("ledgermem")
+    fake = types.ModuleType("getmnemo")
 
-    class LedgerMem:
+    class Mnemo:
         def __init__(self, *a, **k):
             pass
 
@@ -25,29 +25,29 @@ def _install_fake_ledgermem() -> None:
         def delete(self, memory_id):
             return None
 
-    class AsyncLedgerMem(LedgerMem):
+    class AsyncMnemo(Mnemo):
         pass
 
-    fake.LedgerMem = LedgerMem
-    fake.AsyncLedgerMem = AsyncLedgerMem
-    sys.modules["ledgermem"] = fake
+    fake.Mnemo = Mnemo
+    fake.AsyncMnemo = AsyncMnemo
+    sys.modules["getmnemo"] = fake
 
 
-_install_fake_ledgermem()
+_install_fake_getmnemo()
 
 from llama_index.core.schema import TextNode  # noqa: E402
 from llama_index.core.vector_stores.types import VectorStoreQuery  # noqa: E402
-from llama_index_vector_stores_ledgermem import LedgerMemRetriever, LedgerMemVectorStore  # noqa: E402
-from ledgermem import LedgerMem  # noqa: E402
+from llama_index_vector_stores_getmnemo import MnemoRetriever, MnemoVectorStore  # noqa: E402
+from getmnemo import Mnemo  # noqa: E402
 
 
 def test_imports() -> None:
-    assert LedgerMemVectorStore is not None
-    assert LedgerMemRetriever is not None
+    assert MnemoVectorStore is not None
+    assert MnemoRetriever is not None
 
 
 def test_vector_store_add_and_query() -> None:
-    client = LedgerMem()
+    client = Mnemo()
     client.add = MagicMock(return_value=type("R", (), {"id": "mem_42"})())
     hit = type(
         "Hit",
@@ -56,7 +56,7 @@ def test_vector_store_add_and_query() -> None:
     )()
     client.search = MagicMock(return_value=type("Resp", (), {"hits": [hit]})())
 
-    store = LedgerMemVectorStore(client=client)
+    store = MnemoVectorStore(client=client)
     ids = store.add([TextNode(text="hello world", metadata={"foo": "bar"})])
     assert ids == ["mem_42"]
 

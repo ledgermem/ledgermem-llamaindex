@@ -3,14 +3,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "llama-index-vector-stores-ledgermem"
+name = "llama-index-vector-stores-getmnemo"
 version = "0.1.0"
-description = "LlamaIndex vector store and retriever backed by LedgerMem."
+description = "LlamaIndex vector store and retriever backed by Mnemo."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
-authors = [{ name = "LedgerMem", email = "founders@proofly.dev" }]
-keywords = ["ledgermem", "llamaindex", "llama-index", "vector-store", "rag"]
+authors = [{ name = "Mnemo", email = "founders@getmnemo.xyz" }]
+keywords = ["getmnemo", "llamaindex", "llama-index", "vector-store", "rag"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -21,7 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-  "ledgermem>=0.1",
+  "getmnemo>=0.1",
   "llama-index-core>=0.11",
 ]
 
@@ -34,12 +34,12 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ledgermem/ledgermem-llamaindex"
-Issues = "https://github.com/ledgermem/ledgermem-llamaindex/issues"
-Source = "https://github.com/ledgermem/ledgermem-llamaindex"
+Homepage = "https://github.com/getmnemo/getmnemo-llamaindex"
+Issues = "https://github.com/getmnemo/getmnemo-llamaindex/issues"
+Source = "https://github.com/getmnemo/getmnemo-llamaindex"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/llama_index_vector_stores_ledgermem"]
+packages = ["src/llama_index_vector_stores_getmnemo"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,23 +1,23 @@
-"""LlamaIndex retriever that talks to LedgerMem directly (no index needed)."""
+"""LlamaIndex retriever that talks to Mnemo directly (no index needed)."""
 
 from __future__ import annotations
 
 from llama_index.core.callbacks.base import CallbackManager
 from llama_index.core.retrievers import BaseRetriever
 from llama_index.core.schema import NodeWithScore, QueryBundle, TextNode
-from ledgermem import LedgerMem
+from getmnemo import Mnemo
 
 
-class LedgerMemRetriever(BaseRetriever):
-    """A standalone LlamaIndex retriever backed by ``LedgerMem.search``.
+class MnemoRetriever(BaseRetriever):
+    """A standalone LlamaIndex retriever backed by ``Mnemo.search``.
 
     Useful when you want LlamaIndex's query engines and response synthesis but
-    do not want to maintain a separate vector index — LedgerMem is the index.
+    do not want to maintain a separate vector index — Mnemo is the index.
     """
 
     def __init__(
         self,
-        client: LedgerMem,
+        client: Mnemo,
         similarity_top_k: int = 5,
         callback_manager: CallbackManager | None = None,
     ) -> None:
